@@ -1,0 +1,26 @@
+{
+  "name": "dwoc-myos-backend",
+  "version": "1.0.0",
+  "description": "The Repo To Hold the code for the backend of the Make your own stylesheet project.",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node index",
+    "dev": "cross-env NODE_ENV=devlopment nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marmikupadhyay/dwoc-myos-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marmikupadhyay/dwoc-myos-backend/issues"
+  },
+  "homepage": "https://github.com/marmikupadhyay/dwoc-myos-backend#readme",
+  "dependencies": {
+    "cross-env": "^7.0.2",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  }
+}
