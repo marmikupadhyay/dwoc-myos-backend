@@ -1,4 +1,3 @@
-// mongodb+srv://marmik:mar0712@cluster0-otaph.mongodb.net/dwoc?retryWrites=true&w=majority"
 const http = require("http");
 const app = require("./src/app");
 
