@@ -1,15 +1,21 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const SheetItem = require('./SheetItem');
 
 const SheetSchema = new mongoose.Schema({
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
-  filename: {
-    type: String,
-    required: true,
-  },
+	author: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+	},
+	filename: {
+		type: String,
+		required: true,
+	},
+	isPublic: {
+		type: Boolean,
+		default: false,
+	},
+	sheetData: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SheetItem' }],
 });
 
-const Sheet = mongoose.model("Sheet", SheetSchema);
+const Sheet = mongoose.model('Sheet', SheetSchema);
 module.exports = Sheet;
