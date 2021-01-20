@@ -4,9 +4,9 @@ const SheetController = require('../controllers/SheetController');
 
 // Sheet Related Routes
 router.get('/:id', SheetController.getSheetDetails);
-router.get('/all', SheetController.getAllSheets);
+router.get('/:userId/all', SheetController.getAllSheets);
 router.post('/new', SheetController.makeNewSheet);
-router.delete('/delete', SheetController.deleteSheet);
+router.delete('/delete/:id', SheetController.deleteSheet);
 
 // Block Related Routes
 router.post('/block/new', SheetController.makeNewBlock);
