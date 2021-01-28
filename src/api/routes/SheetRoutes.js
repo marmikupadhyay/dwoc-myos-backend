@@ -9,7 +9,7 @@ router.post('/new', SheetController.makeNewSheet);
 router.delete('/delete/:id', SheetController.deleteSheet);
 
 // Block Related Routes
-router.post('/block/new', SheetController.makeNewBlock);
+router.post('/block/new/:sheetId', SheetController.makeNewBlock);
 router.post('/block/edit/:id', SheetController.editBlock);
 router.delete('/:sheetId/block/delete/:sheetId/:blockId', SheetController.deleteBlock);
 
