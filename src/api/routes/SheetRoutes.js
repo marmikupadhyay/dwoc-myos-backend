@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const SheetController = require('../controllers/SheetController');
 
+// Input Controller Route 
+router.get('/controllers',SheetController.getInputControllers);
+
 // Sheet Related Routes
 router.get('/:id', SheetController.getSheetDetails);
 router.get('/:userId/all', SheetController.getAllSheets);

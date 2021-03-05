@@ -1,12 +1,31 @@
 const User = require('../../models/User');
 const Sheet = require('../../models/Sheet');
+const InputController = require('../../models/InputController');
 const SheetItem = require('../../models/SheetItem');
-const mongoose  = require('mongoose');
+const mongoose = require('mongoose');
 
 const SheetController = {
+	getInputControllers(req, res, next) {
+		InputController.find({})
+			.then((controllers) => {
+				res.status(200).json({
+					message: 'Controllers Fetched Successfully',
+					data: controllers,
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+				res.status(500).json({
+					message: 'Internal Server Error',
+					data: {},
+				});
+			});
+	},
 	getSheetDetails(req, res, next) {
 		Sheet.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
-			.populate('sheetData').lean().populate('author','username')
+			.populate('sheetData')
+			.lean()
+			.populate('author', 'username')
 			.then((sheet) => {
 				if (!sheet) {
 					res.status(404).json({
@@ -115,19 +134,28 @@ const SheetController = {
 		let properties = [];
 		let newSheetItem = new SheetItem({
 			name: nameOfBlock,
-			properties: properties
+			properties: properties,
 		});
-		newSheetItem.save()
-		.then(block => {
-			Sheet.findOneAndUpdate(
-				{_id: mongoose.Types.ObjectId(sheetId)},
-				{ $push: { sheetData: block._id }}
-			)
-			.then(Sheet => {
-				res.status(200).json({
-					message: 'Block Created Successfully',
-					data: Sheet,
-				})
+		newSheetItem
+			.save()
+			.then((block) => {
+				Sheet.findOneAndUpdate(
+					{ _id: mongoose.Types.ObjectId(sheetId) },
+					{ $push: { sheetData: block._id } }
+				)
+					.then((Sheet) => {
+						res.status(200).json({
+							message: 'Block Created Successfully',
+							data: Sheet,
+						});
+					})
+					.catch((err) => {
+						console.log(err);
+						res.status(500).json({
+							message: 'Internal Server Error',
+							data: {},
+						});
+					});
 			})
 			.catch((err) => {
 				console.log(err);
@@ -136,69 +164,58 @@ const SheetController = {
 					data: {},
 				});
 			});
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({
-				message: 'Internal Server Error',
-				data: {},
-			});
-		});
-
 	},
 	editBlock(req, res, next) {
 		blockId = req.params.blockId;
 		propertyObject = req.body.properties;
 		SheetItem.findOneAndUpdate(
-			{_id: mongoose.Types.ObjectId(blockId)},
-			{ properties: propertyObject}
+			{ _id: mongoose.Types.ObjectId(blockId) },
+			{ properties: propertyObject }
 		)
-		.then(block => {
-			res.status(200).json({
-				message: 'Block Created Successfully',
-				data: block,
-			})
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({
-				message: 'Internal Server Error',
-				data: {},
-			});
-		});
-	},
-	deleteBlock(req, res, next) {
-		blockId = req.params.blockId; 
-		sheetId = req.params.sheetId;
-		SheetItem.findOneAndDelete(
-			{ _id: mongoose.Types.ObjectId(blockId)}
-		)
-		.then(block => {
-			Sheet.findOneAndUpdate(
-				{ _id: mongoose.Types.ObjectId(sheetId)},
-				{ $pull: { sheetData: block._id } }
-			)
-			.then(sheet => {
-			res.status(200).json({
-				message: 'Block deleted Successfully',
-				data: sheet,
+			.then((block) => {
+				res.status(200).json({
+					message: 'Block Created Successfully',
+					data: block,
 				});
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.log(err);
 				res.status(500).json({
 					message: 'Internal Server Error',
 					data: {},
 				});
 			});
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({
-				message: 'Internal Server Error',
-				data: {},
+	},
+	deleteBlock(req, res, next) {
+		blockId = req.params.blockId;
+		sheetId = req.params.sheetId;
+		SheetItem.findOneAndDelete({ _id: mongoose.Types.ObjectId(blockId) })
+			.then((block) => {
+				Sheet.findOneAndUpdate(
+					{ _id: mongoose.Types.ObjectId(sheetId) },
+					{ $pull: { sheetData: block._id } }
+				)
+					.then((sheet) => {
+						res.status(200).json({
+							message: 'Block deleted Successfully',
+							data: sheet,
+						});
+					})
+					.catch((err) => {
+						console.log(err);
+						res.status(500).json({
+							message: 'Internal Server Error',
+							data: {},
+						});
+					});
+			})
+			.catch((err) => {
+				console.log(err);
+				res.status(500).json({
+					message: 'Internal Server Error',
+					data: {},
+				});
 			});
-		});
 	},
 };
 
