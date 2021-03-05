@@ -1,12 +1,12 @@
 const User = require('../../models/User');
 const Sheet = require('../../models/Sheet');
 const SheetItem = require('../../models/SheetItem');
-const { Mongoose } = require('mongoose');
+const mongoose  = require('mongoose');
 
 const SheetController = {
 	getSheetDetails(req, res, next) {
-		Sheet.findOne({ _id: Mongoose.Types.objectId(req.params.id) })
-			.populate('sheetData')
+		Sheet.findOne({ _id: mongoose.Types.ObjectId(req.params.id) })
+			.populate('sheetData').lean().populate('author','username')
 			.then((sheet) => {
 				if (!sheet) {
 					res.status(404).json({
@@ -30,7 +30,7 @@ const SheetController = {
 	},
 	getAllSheets(req, res, next) {
 		const userId = req.params.userId; //Change to req.user._id once we add the auth
-		Sheet.find({ author: Mongoose.Types.objectId(userId) })
+		Sheet.find({ author: mongoose.Types.ObjectId(userId) })
 			.populate('sheetData')
 			.then((sheets) => {
 				res.status(200).json({
@@ -55,7 +55,7 @@ const SheetController = {
 			.save()
 			.then((sheet) => {
 				User.findOneAndUpdate(
-					{ _id: Mongoose.Types.objectId(sheet.author) },
+					{ _id: mongoose.Types.ObjectId(sheet.author) },
 					{ $push: { sheets: sheet._id } }
 				)
 					.then((user) => {
@@ -81,7 +81,7 @@ const SheetController = {
 			});
 	},
 	deleteSheet(req, res, next) {
-		Sheet.findOneAndDelete({ _id: Mongoose.Types.objectId(req.params.id) })
+		Sheet.findOneAndDelete({ _id: mongoose.Types.ObjectId(req.params.id) })
 			.then((sheet) => {
 				User.findOneAndUpdate(
 					{ _id: sheet.author },
@@ -120,7 +120,7 @@ const SheetController = {
 		newSheetItem.save()
 		.then(block => {
 			Sheet.findOneAndUpdate(
-				{_id: Mongoose.Types.ObjecId(sheetId)},
+				{_id: mongoose.Types.ObjectId(sheetId)},
 				{ $push: { sheetData: block._id }}
 			)
 			.then(Sheet => {
@@ -150,7 +150,7 @@ const SheetController = {
 		blockId = req.params.blockId;
 		propertyObject = req.body.properties;
 		SheetItem.findOneAndUpdate(
-			{_id: Mongoose.Types.objectId(blockId)},
+			{_id: mongoose.Types.ObjectId(blockId)},
 			{ properties: propertyObject}
 		)
 		.then(block => {
@@ -171,11 +171,11 @@ const SheetController = {
 		blockId = req.params.blockId; 
 		sheetId = req.params.sheetId;
 		SheetItem.findOneAndDelete(
-			{ _id: Mongoose.Types.objectId(blockId)}
+			{ _id: mongoose.Types.ObjectId(blockId)}
 		)
 		.then(block => {
 			Sheet.findOneAndUpdate(
-				{ _id: Mongoose.Types.objectId(sheetId)},
+				{ _id: mongoose.Types.ObjectId(sheetId)},
 				{ $pull: { sheetData: block._id } }
 			)
 			.then(sheet => {
