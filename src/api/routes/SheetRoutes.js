@@ -13,7 +13,7 @@ router.delete('/delete/:id', SheetController.deleteSheet);
 
 // Block Related Routes
 router.post('/block/new/:sheetId', SheetController.makeNewBlock);
-router.post('/block/edit/:id', SheetController.editBlock);
+router.post('/block/edit/', SheetController.editBlock);
 router.delete('/:sheetId/block/delete/:sheetId/:blockId', SheetController.deleteBlock);
 
 module.exports = router;

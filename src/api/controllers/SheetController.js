@@ -141,8 +141,12 @@ const SheetController = {
 			.then((block) => {
 				Sheet.findOneAndUpdate(
 					{ _id: mongoose.Types.ObjectId(sheetId) },
-					{ $push: { sheetData: block._id } }
+					{ $push: { sheetData: block._id } },
+					{ new: true }
 				)
+					.populate('sheetData')
+					.lean()
+					.populate('author', 'username')
 					.then((Sheet) => {
 						res.status(200).json({
 							message: 'Block Created Successfully',
@@ -166,15 +170,14 @@ const SheetController = {
 			});
 	},
 	editBlock(req, res, next) {
-		blockId = req.params.blockId;
-		propertyObject = req.body.properties;
+		let block = JSON.parse(req.body.data);
 		SheetItem.findOneAndUpdate(
-			{ _id: mongoose.Types.ObjectId(blockId) },
-			{ properties: propertyObject }
+			{ _id: mongoose.Types.ObjectId(block._id) },
+			{ properties: block.properties}
 		)
 			.then((block) => {
 				res.status(200).json({
-					message: 'Block Created Successfully',
+					message: 'Block Updated Successfully',
 					data: block,
 				});
 			})
